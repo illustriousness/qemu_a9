@@ -289,8 +289,6 @@
 #define ULOG_OUTPUT_TAG
 /* end of log format */
 #define ULOG_BACKEND_USING_CONSOLE
-#define ULOG_USING_FILTER
-#define ULOG_USING_FINSH_CMD
 #define RT_USING_RESOURCE_ID
 #define RT_USING_ADT
 #define RT_USING_ADT_AVL
@@ -439,6 +437,10 @@
 /* HPMicro SDK */
 
 /* end of HPMicro SDK */
+
+/* FT32 HAL & SDK Drivers */
+
+/* end of FT32 HAL & SDK Drivers */
 /* end of HAL & SDK Drivers */
 
 /* sensors drivers */

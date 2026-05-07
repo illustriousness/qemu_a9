@@ -125,5 +125,83 @@
             "rt-thread/src/utest": true,
             "rt-thread/tools": true
         }
+    },
+    // VS Code 工作区任务配置。
+    "tasks": {
+        // 任务配置的 schema 版本。
+        "version": "2.0.0",
+        // 在“运行任务”里显示的任务列表。
+        "tasks": [
+            {
+                // 任务显示名称。
+                "label": "QEMU: Start Debug Server",
+                // 通过 shell 执行该任务。
+                "type": "shell",
+                // 启动带 GDB stub 的 QEMU（-S -s）。
+                "command": "./qemu-dbg.sh",
+                "options": {
+                    // 从仓库根目录运行，保证 rtthread.bin/sd.bin 路径正确。
+                    "cwd": "${workspaceFolder}"
+                },
+                "presentation": {
+                    // 启动 QEMU 时始终显示终端。
+                    "reveal": "always",
+                    // 为该任务复用一个专用终端页签。
+                    "panel": "dedicated",
+                    // 启动后不抢占编辑器或调试界面的焦点。
+                    "focus": false
+                },
+                // QEMU 运行输出不需要问题匹配器。
+                "problemMatcher": []
+            }
+        ]
+    },
+    // VS Code 调试配置。
+    "launch": {
+        // 调试配置的 schema 版本。
+        "version": "0.2.0",
+        // “运行和调试”面板中显示的调试配置列表。
+        "configurations": [
+            {
+                // 调试配置显示名称。
+                "name": "QEMU A9 SMP: Attach GDB (:1234)",
+                // 使用 Microsoft 的 C/C++ 调试前端。
+                "type": "cppdbg",
+                // 启动调试会话，并附加到远程 GDB Server。
+                "request": "launch",
+                // 供 GDB 做源码级调试使用的带符号 ELF 文件。
+                "program": "${workspaceFolder}/rtthread.elf",
+                // 调试器进程的工作目录。
+                "cwd": "${workspaceFolder}",
+                // 指定 cpptools 使用 GDB/MI 协议。
+                "MIMode": "gdb",
+                // ARM 交叉工具链里的 GDB 客户端。
+                "miDebuggerPath": "arm-none-eabi-gdb",
+                // qemu-dbg.sh 启动后 QEMU 内置 GDB Server 的地址（-s 对应 :1234）。
+                "miDebuggerServerAddress": "localhost:1234",
+                // 附加完成后不要额外发送 run，QEMU 此时已经停在等待状态。
+                "launchCompleteCommand": "None",
+                // 使用集成终端/编辑器，不额外弹外部控制台。
+                "externalConsole": false,
+                "setupCommands": [
+                    {
+                        // 尽量开启 GDB 的 pretty printing，便于查看结构体等数据。
+                        "description": "Enable GDB pretty printing",
+                        // 调试启动阶段发给 GDB 的原始命令。
+                        "text": "-enable-pretty-printing",
+                        // 即使这条命令失败，也继续后续附加流程。
+                        "ignoreFailures": true
+                    },
+                    {
+                        // 明确告诉 GDB 当前目标架构是 ARM。
+                        "description": "Set ARM architecture",
+                        // 调试启动阶段发给 GDB 的原始命令。
+                        "text": "set architecture arm",
+                        // 如果工具链已经自动识别架构，失败也不终止调试。
+                        "ignoreFailures": true
+                    }
+                ]
+            }
+        ]
     }
 }
